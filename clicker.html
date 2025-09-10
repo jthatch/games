@@ -17,16 +17,23 @@
             font-family: 'JetBrains Mono', monospace;
             background: #0a0a0a;
             color: #00ff41;
-            overflow-x: hidden;
+            overflow: hidden;
             user-select: none;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
         .container {
-            min-height: 100vh;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         
         .header {
@@ -299,29 +306,71 @@
         }
         
         @media (max-width: 768px) {
-            .click-button {
-                width: 250px;
-                height: 250px;
-                font-size: 20px;
+            .container {
+                padding: 5px;
+            }
+            
+            .header {
+                margin-bottom: 15px;
             }
             
             .header h1 {
-                font-size: 2em;
+                font-size: 1.8em;
+                margin-bottom: 5px;
+            }
+            
+            .global-reset {
+                padding: 8px 16px;
+                font-size: 14px;
+                margin: 10px 5px;
+            }
+            
+            .click-button {
+                width: 200px;
+                height: 200px;
+                font-size: 18px;
+                margin-bottom: 15px;
             }
             
             .game-selector {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .game-btn {
+                padding: 8px 12px;
+                font-size: 14px;
+                min-width: 100px;
             }
             
             .targets-area {
-                height: 400px;
+                height: 300px;
             }
             
             .target {
                 width: 35px;
                 height: 35px;
                 font-size: 12px;
+            }
+            
+            .stats {
+                font-size: 16px;
+                margin: 10px 0;
+            }
+            
+            .stats .big-number {
+                font-size: 28px;
+            }
+            
+            .history-panel {
+                max-height: 120px;
+                margin: 10px 0;
+            }
+            
+            .instructions {
+                font-size: 14px;
+                margin: 10px 0;
             }
         }
     </style>
@@ -347,11 +396,11 @@
                 Click the button twice as quickly as possible. Your double-click speed will be measured.
             </div>
             <div class="click-button" onclick="handleDoubleClick()">
-                <span>DOUBLE CLICK ME</span>
+                <span id="click-text">CLICK 1/2</span>
             </div>
             <div class="stats">
-                <div>Best Time: <span class="big-number" id="best-double">--</span></div>
-                <div>Last Time: <span id="last-double">--</span></div>
+                <div>Last Time: <span class="big-number" id="last-double">--</span></div>
+                <div>Best Time: <span id="best-double">--</span></div>
                 <div>Attempts: <span id="attempts-double">0</span></div>
             </div>
             <div class="history-panel" id="double-history"></div>
@@ -524,9 +573,11 @@
         // Double Click Game
         function handleDoubleClick() {
             const now = performance.now();
+            const clickText = document.getElementById('click-text');
             
             if (gameState.doubleClick.firstClick === null) {
                 gameState.doubleClick.firstClick = now;
+                clickText.textContent = 'CLICK 2/2';
             } else {
                 const timeDiff = now - gameState.doubleClick.firstClick;
                 gameState.doubleClick.attempts++;
@@ -552,6 +603,7 @@
                 saveGameData();
                 
                 gameState.doubleClick.firstClick = null;
+                clickText.textContent = 'CLICK 1/2';
             }
         }
 
@@ -565,6 +617,7 @@
             document.getElementById('best-double').textContent = '--';
             document.getElementById('last-double').textContent = '--';
             document.getElementById('attempts-double').textContent = '0';
+            document.getElementById('click-text').textContent = 'CLICK 1/2';
             updateHistory('double', []);
             saveGameData();
         }
@@ -779,6 +832,7 @@
                 gameState.reaction = { state: 'waiting', startTime: null, readyTime: null, best: null, attempts: 0, history: [] };
                 gameState.placement = { gameActive: false, currentTarget: 0, gameStartTime: null, targetTimes: [], best: null, attempts: 0, history: [] };
                 
+                document.getElementById('click-text').textContent = 'CLICK 1/2';
                 document.getElementById('reaction-screen').className = 'reaction-screen waiting';
                 document.getElementById('reaction-text').textContent = 'CLICK TO START';
                 document.getElementById('targets-area').innerHTML = '';
