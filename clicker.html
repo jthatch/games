@@ -486,6 +486,39 @@
             box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
         }
         
+        .pull-refresh-indicator {
+            position: fixed;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        .pull-refresh-indicator.visible {
+            top: 20px;
+        }
+        
+        .pull-refresh-indicator.refreshing {
+            animation: refreshSpin 1s linear infinite;
+        }
+        
+        @keyframes refreshSpin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 5px;
@@ -578,6 +611,8 @@
             <button class="fullscreen-btn" onclick="enterFullscreen()">TAP TO START</button>
         </div>
     </div>
+    
+    <div id="pull-refresh-indicator" class="pull-refresh-indicator">↓</div>
     
     <div class="container">
         <div class="header">
@@ -718,6 +753,85 @@
                     document.getElementById('fullscreen-overlay').style.display = 'flex';
                 }, 500);
             }
+        }
+
+        // Pull-to-refresh functionality
+        let pullToRefreshState = {
+            startY: 0,
+            currentY: 0,
+            isRefreshing: false,
+            threshold: 80
+        };
+
+        function initPullToRefresh() {
+            const indicator = document.getElementById('pull-refresh-indicator');
+            const container = document.querySelector('.container');
+            
+            // Touch events for pull-to-refresh
+            container.addEventListener('touchstart', (e) => {
+                if (container.scrollTop === 0 && !pullToRefreshState.isRefreshing) {
+                    pullToRefreshState.startY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (pullToRefreshState.startY === 0 || pullToRefreshState.isRefreshing) return;
+                
+                pullToRefreshState.currentY = e.touches[0].clientY;
+                const pullDistance = pullToRefreshState.currentY - pullToRefreshState.startY;
+                
+                if (pullDistance > 0 && container.scrollTop === 0) {
+                    e.preventDefault();
+                    
+                    if (pullDistance > pullToRefreshState.threshold) {
+                        indicator.classList.add('visible');
+                        indicator.textContent = '↻';
+                        indicator.style.transform = `translateX(-50%) scale(${Math.min(1.2, pullDistance / 100)})`;
+                    } else {
+                        indicator.classList.remove('visible');
+                        indicator.textContent = '↓';
+                        indicator.style.transform = `translateX(-50%) scale(${Math.max(0.8, pullDistance / 100)})`;
+                    }
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', (e) => {
+                if (pullToRefreshState.startY === 0 || pullToRefreshState.isRefreshing) return;
+                
+                const pullDistance = pullToRefreshState.currentY - pullToRefreshState.startY;
+                
+                if (pullDistance > pullToRefreshState.threshold) {
+                    triggerRefresh();
+                } else {
+                    resetPullToRefresh();
+                }
+                
+                pullToRefreshState.startY = 0;
+                pullToRefreshState.currentY = 0;
+            }, { passive: true });
+        }
+
+        function triggerRefresh() {
+            const indicator = document.getElementById('pull-refresh-indicator');
+            
+            pullToRefreshState.isRefreshing = true;
+            indicator.classList.add('visible', 'refreshing');
+            indicator.textContent = '⟳';
+            indicator.style.transform = 'translateX(-50%) scale(1)';
+            
+            // Simulate refresh delay then reload
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
+        }
+
+        function resetPullToRefresh() {
+            const indicator = document.getElementById('pull-refresh-indicator');
+            
+            indicator.classList.remove('visible', 'refreshing');
+            indicator.textContent = '↓';
+            indicator.style.transform = 'translateX(-50%) scale(1)';
+            pullToRefreshState.isRefreshing = false;
         }
 
         // Game state with localStorage integration
@@ -1171,6 +1285,7 @@
             loadGameData();
             checkMobile();
             initDoubleClickButton();
+            initPullToRefresh();
         });
 
         // Prevent context menu on mobile
