@@ -38,15 +38,91 @@
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            position: relative;
         }
         
         .header h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
             font-weight: 700;
             color: #00ff41;
             text-shadow: 0 0 10px #00ff41;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .dropdown-arrow {
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+        
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+        
+        .header-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            border: 2px solid #00ff41;
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
+            display: none;
+        }
+        
+        .header-dropdown.open {
+            display: block;
+            animation: dropdownFadeIn 0.3s ease;
+        }
+        
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .dropdown-games {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .dropdown-game-btn {
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .dropdown-game-btn:hover {
+            background: linear-gradient(135deg, #333, #555);
+            box-shadow: 0 0 15px #00ff41;
+        }
+        
+        .dropdown-game-btn.active {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            color: #0a0a0a;
         }
         
         .game-selector {
@@ -140,17 +216,17 @@
         
         .reaction-screen {
             width: 100%;
-            height: 400px;
+            height: 70vh;
             border: 4px solid #00ff41;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.1s ease;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         .reaction-screen.waiting {
@@ -170,12 +246,59 @@
         
         .targets-area {
             width: 100%;
-            height: 500px;
+            height: 70vh;
             border: 4px solid #00ff41;
             border-radius: 12px;
             position: relative;
             background: #1a1a1a;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .placement-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            z-index: 10;
+        }
+        
+        .placement-start-btn {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            border: none;
+            color: #0a0a0a;
+            padding: 20px 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 24px;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+        
+        .placement-start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.7);
+        }
+        
+        .countdown-display {
+            font-size: 120px;
+            font-weight: 700;
+            color: #00ff41;
+            text-shadow: 0 0 30px #00ff41;
+            animation: countdownPulse 1s ease-in-out;
+        }
+        
+        @keyframes countdownPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
         .target {
@@ -305,24 +428,87 @@
             line-height: 1.5;
         }
         
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fullscreen-prompt {
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #00ff41;
+            font-family: 'JetBrains Mono', monospace;
+            max-width: 300px;
+            box-shadow: 0 0 30px #00ff41;
+        }
+        
+        .fullscreen-prompt h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ff41;
+        }
+        
+        .fullscreen-prompt p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            color: #aaa;
+        }
+        
+        .fullscreen-btn {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            border: none;
+            color: #0a0a0a;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+        
+        .fullscreen-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 5px;
             }
             
             .header {
-                margin-bottom: 15px;
+                margin-bottom: 10px;
             }
             
             .header h1 {
-                font-size: 1.8em;
+                font-size: 1.6em;
                 margin-bottom: 5px;
+            }
+            
+            .header-dropdown {
+                min-width: 280px;
+                padding: 15px;
             }
             
             .global-reset {
                 padding: 8px 16px;
                 font-size: 14px;
-                margin: 10px 5px;
+                margin: 10px 0;
             }
             
             .click-button {
@@ -345,7 +531,16 @@
             }
             
             .targets-area {
-                height: 300px;
+                height: 60vh;
+            }
+            
+            .placement-start-btn {
+                padding: 15px 30px;
+                font-size: 20px;
+            }
+            
+            .countdown-display {
+                font-size: 80px;
             }
             
             .target {
@@ -376,26 +571,38 @@
     </style>
 </head>
 <body>
+    <div id="fullscreen-overlay" class="fullscreen-overlay" style="display: none;">
+        <div class="fullscreen-prompt">
+            <h2>GO FULLSCREEN</h2>
+            <p>Tap to enter fullscreen mode for the best gaming experience</p>
+            <button class="fullscreen-btn" onclick="enterFullscreen()">TAP TO START</button>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header">
-            <h1>CLICK SPEED GAMES</h1>
-            <button class="global-reset" onclick="resetAllProgress()">RESET ALL PROGRESS</button>
+            <h1 onclick="toggleHeaderDropdown()">
+                CLICK SPEED GAMES
+                <span class="dropdown-arrow" id="dropdown-arrow">▼</span>
+            </h1>
+            <div class="header-dropdown" id="header-dropdown">
+                <div class="dropdown-games">
+                    <button class="dropdown-game-btn active" onclick="switchGameFromDropdown('doubleclick')">DOUBLE CLICK</button>
+                    <button class="dropdown-game-btn" onclick="switchGameFromDropdown('reaction')">REACTION TIME</button>
+                    <button class="dropdown-game-btn" onclick="switchGameFromDropdown('placement')">PLACEMENT CLICK</button>
+                </div>
+                <button class="global-reset" onclick="resetAllProgress()">RESET ALL PROGRESS</button>
+            </div>
         </div>
         
         <div id="notification" class="notification"></div>
-        
-        <div class="game-selector">
-            <button class="game-btn active" onclick="switchGame('doubleclick')">DOUBLE CLICK</button>
-            <button class="game-btn" onclick="switchGame('reaction')">REACTION TIME</button>
-            <button class="game-btn" onclick="switchGame('placement')">PLACEMENT CLICK</button>
-        </div>
         
         <!-- Double Click Speed Game -->
         <div id="doubleclick-game" class="game-container active">
             <div class="instructions">
                 Click the button twice as quickly as possible. Your double-click speed will be measured.
             </div>
-            <div class="click-button" onclick="handleDoubleClick()">
+            <div class="click-button" id="double-click-button">
                 <span id="click-text">CLICK 1/2</span>
             </div>
             <div class="stats">
@@ -429,7 +636,11 @@
             <div class="instructions">
                 Click all 10 targets as quickly as possible. Individual and total times will be recorded.
             </div>
-            <div class="targets-area" id="targets-area"></div>
+            <div class="targets-area" id="targets-area">
+                <div class="placement-overlay" id="placement-overlay">
+                    <button class="placement-start-btn" onclick="startPlacementGameWithCountdown()">START GAME</button>
+                </div>
+            </div>
             <div class="stats">
                 <div>Best Total: <span class="big-number" id="best-placement">--</span></div>
                 <div>Last Total: <span id="last-placement">--</span></div>
@@ -437,12 +648,78 @@
             </div>
             <div class="history-panel" id="placement-history"></div>
             <div class="results" id="placement-results" style="display: none;"></div>
-            <button class="reset-btn" onclick="startPlacementGame()">START GAME</button>
             <button class="reset-btn" onclick="resetPlacement()">RESET STATS</button>
         </div>
     </div>
 
     <script>
+        // Mobile fullscreen functionality
+        function enterFullscreen() {
+            const overlay = document.getElementById('fullscreen-overlay');
+            overlay.style.display = 'none';
+            
+            // Try to enter fullscreen
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            }
+            
+            // Scroll to top to hide address bar on mobile
+            window.scrollTo(0, 1);
+            setTimeout(() => window.scrollTo(0, 0), 100);
+        }
+
+        // Header dropdown functionality
+        function toggleHeaderDropdown() {
+            const dropdown = document.getElementById('header-dropdown');
+            const arrow = document.getElementById('dropdown-arrow');
+            
+            if (dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+                arrow.classList.remove('open');
+            } else {
+                dropdown.classList.add('open');
+                arrow.classList.add('open');
+            }
+        }
+
+        function switchGameFromDropdown(game) {
+            // Close dropdown
+            document.getElementById('header-dropdown').classList.remove('open');
+            document.getElementById('dropdown-arrow').classList.remove('open');
+            
+            // Update button states
+            document.querySelectorAll('.dropdown-game-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Switch game
+            document.querySelectorAll('.game-container').forEach(container => container.classList.remove('active'));
+            document.getElementById(game + '-game').classList.add('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('header-dropdown');
+            const header = document.querySelector('.header');
+            
+            if (!header.contains(event.target) && dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+                document.getElementById('dropdown-arrow').classList.remove('open');
+            }
+        });
+
+        // Show fullscreen prompt on mobile
+        function checkMobile() {
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    document.getElementById('fullscreen-overlay').style.display = 'flex';
+                }, 500);
+            }
+        }
+
         // Game state with localStorage integration
         let gameState = {
             doubleClick: {
@@ -697,6 +974,25 @@
         }
 
         // Placement Click Game
+        function startPlacementGameWithCountdown() {
+            const overlay = document.getElementById('placement-overlay');
+            let count = 3;
+            
+            function countdown() {
+                overlay.innerHTML = `<div class="countdown-display">${count}</div>`;
+                
+                if (count > 0) {
+                    count--;
+                    setTimeout(countdown, 1000);
+                } else {
+                    overlay.style.display = 'none';
+                    startPlacementGame();
+                }
+            }
+            
+            countdown();
+        }
+
         function startPlacementGame() {
             const area = document.getElementById('targets-area');
             const results = document.getElementById('placement-results');
@@ -764,7 +1060,14 @@
             targets[targetIndex].style.display = 'none';
             
             if (gameState.placement.currentTarget < 10) {
-                targets[gameState.placement.currentTarget].style.display = 'flex';
+                // Add random delay between 0-2 seconds before showing next target
+                const randomDelay = Math.random() * 2000;
+                setTimeout(() => {
+                    if (gameState.placement.gameActive && gameState.placement.currentTarget < 10) {
+                        targets[gameState.placement.currentTarget].style.display = 'flex';
+                        gameState.placement.lastTargetTime = performance.now(); // Update time reference after delay
+                    }
+                }, randomDelay);
             } else {
                 finishPlacementGame();
             }
@@ -819,7 +1122,11 @@
             document.getElementById('best-placement').textContent = '--';
             document.getElementById('last-placement').textContent = '--';
             document.getElementById('attempts-placement').textContent = '0';
-            document.getElementById('targets-area').innerHTML = '';
+            document.getElementById('targets-area').innerHTML = `
+                <div class="placement-overlay" id="placement-overlay">
+                    <button class="placement-start-btn" onclick="startPlacementGameWithCountdown()">START GAME</button>
+                </div>
+            `;
             document.getElementById('placement-results').style.display = 'none';
             updateHistory('placement', []);
             saveGameData();
@@ -843,8 +1150,28 @@
             }
         }
 
+        // Initialize double-click button event listeners for better responsiveness
+        function initDoubleClickButton() {
+            const button = document.getElementById('double-click-button');
+            
+            // Remove default onclick to avoid conflicts
+            button.removeAttribute('onclick');
+            
+            // Add both touch and mouse events for maximum responsiveness
+            button.addEventListener('touchstart', handleDoubleClick, { passive: true });
+            button.addEventListener('mousedown', handleDoubleClick);
+            
+            // Prevent default behaviors that might interfere
+            button.addEventListener('touchend', (e) => e.preventDefault());
+            button.addEventListener('click', (e) => e.preventDefault());
+        }
+
         // Initialize on page load
-        window.addEventListener('load', loadGameData);
+        window.addEventListener('load', () => {
+            loadGameData();
+            checkMobile();
+            initDoubleClickButton();
+        });
 
         // Prevent context menu on mobile
         document.addEventListener('contextmenu', e => e.preventDefault());
