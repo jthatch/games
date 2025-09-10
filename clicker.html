@@ -767,8 +767,22 @@
             const indicator = document.getElementById('pull-refresh-indicator');
             const container = document.querySelector('.container');
             
+            // Function to check if touch target is a scrollable element
+            function isScrollableElement(element) {
+                const scrollableSelectors = ['.history-panel', '.results', '.targets-area'];
+                return scrollableSelectors.some(selector => 
+                    element.closest(selector) !== null
+                );
+            }
+            
             // Touch events for pull-to-refresh
             container.addEventListener('touchstart', (e) => {
+                // Don't trigger pull-to-refresh if touching a scrollable element
+                if (isScrollableElement(e.target)) {
+                    pullToRefreshState.startY = 0;
+                    return;
+                }
+                
                 if (container.scrollTop === 0 && !pullToRefreshState.isRefreshing) {
                     pullToRefreshState.startY = e.touches[0].clientY;
                 }
@@ -776,6 +790,13 @@
             
             container.addEventListener('touchmove', (e) => {
                 if (pullToRefreshState.startY === 0 || pullToRefreshState.isRefreshing) return;
+                
+                // Don't trigger pull-to-refresh if touching a scrollable element
+                if (isScrollableElement(e.target)) {
+                    resetPullToRefresh();
+                    pullToRefreshState.startY = 0;
+                    return;
+                }
                 
                 pullToRefreshState.currentY = e.touches[0].clientY;
                 const pullDistance = pullToRefreshState.currentY - pullToRefreshState.startY;
