@@ -301,6 +301,132 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
+        .color-flash-screen {
+            width: 100%;
+            height: 70vh;
+            border: 4px solid #00ff41;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .color-target-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff41;
+            font-weight: 600;
+        }
+        
+        .audio-reflex-screen {
+            width: 100%;
+            height: 70vh;
+            border: 4px solid #00ff41;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            color: #00ff41;
+        }
+        
+        .audio-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .shape-shifter-screen {
+            width: 100%;
+            height: 70vh;
+            border: 4px solid #00ff41;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+        }
+        
+        .shape-display {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 150px;
+            transition: all 0.2s ease;
+        }
+        
+        .shape-circle { color: #00ff41; }
+        .shape-square { color: #ff4444; }
+        .shape-triangle { color: #ffaa00; }
+        .shape-diamond { color: #aa44ff; }
+        
+        .game-instructions {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        
+        .game-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .game-container.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stats {
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .color-flash-screen:active {
+            transform: scale(0.98);
+        }
+        
+        .audio-reflex-screen:active {
+            transform: scale(0.98);
+        }
+        
+        .shape-shifter-screen:active {
+            transform: scale(0.98);
+        }
+        
         .target {
             width: 40px;
             height: 40px;
@@ -600,6 +726,40 @@
                 font-size: 14px;
                 margin: 10px 0;
             }
+            
+            .game-instructions {
+                font-size: 12px;
+                margin: 8px 0;
+            }
+            
+            .color-flash-screen {
+                height: 60vh;
+                font-size: 24px;
+            }
+            
+            .color-target-display {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+            
+            .audio-reflex-screen {
+                height: 60vh;
+                font-size: 24px;
+            }
+            
+            .audio-icon {
+                font-size: 60px;
+            }
+            
+            .shape-shifter-screen {
+                height: 60vh;
+            }
+            
+            .shape-display {
+                font-size: 120px;
+                width: 150px;
+                height: 150px;
+            }
         }
     </style>
 </head>
@@ -625,6 +785,9 @@
                     <button class="dropdown-game-btn active" onclick="switchGameFromDropdown('doubleclick')">DOUBLE CLICK</button>
                     <button class="dropdown-game-btn" onclick="switchGameFromDropdown('reaction')">REACTION TIME</button>
                     <button class="dropdown-game-btn" onclick="switchGameFromDropdown('placement')">PLACEMENT CLICK</button>
+                    <button class="dropdown-game-btn" onclick="switchGameFromDropdown('colorflash')">COLOR FLASH</button>
+                    <button class="dropdown-game-btn" onclick="switchGameFromDropdown('audioreflex')">AUDIO REFLEX</button>
+                    <button class="dropdown-game-btn" onclick="switchGameFromDropdown('shapeshifter')">SHAPE SHIFTER</button>
                 </div>
                 <button class="global-reset" onclick="resetAllProgress()">RESET ALL PROGRESS</button>
             </div>
@@ -684,6 +847,60 @@
             <div class="history-panel" id="placement-history"></div>
             <div class="results" id="placement-results" style="display: none;"></div>
             <button class="reset-btn" onclick="resetPlacement()">RESET STATS</button>
+        </div>
+        
+        <!-- Color Flash Game -->
+        <div id="colorflash-game" class="game-container">
+            <div class="game-instructions">
+                Watch for the target color to flash on screen. Tap immediately when you see it!
+            </div>
+            <div class="color-flash-screen" onclick="handleColorFlash()" id="color-flash-screen">
+                <div class="color-target-display" id="color-target">TARGET: RED</div>
+                <span id="color-flash-text">TAP TO START</span>
+            </div>
+            <div class="stats">
+                <div>Best Time: <span class="big-number" id="best-colorflash">--</span></div>
+                <div>Last Time: <span id="last-colorflash">--</span></div>
+                <div>Attempts: <span id="attempts-colorflash">0</span></div>
+            </div>
+            <div class="history-panel" id="colorflash-history"></div>
+            <button class="reset-btn" onclick="resetColorFlash()">RESET STATS</button>
+        </div>
+        
+        <!-- Audio Reflex Game -->
+        <div id="audioreflex-game" class="game-container">
+            <div class="game-instructions">
+                Put on headphones for best experience. Listen carefully and tap as soon as you hear the sound!
+            </div>
+            <div class="audio-reflex-screen" onclick="handleAudioReflex()" id="audio-reflex-screen">
+                <div class="audio-icon">🔊</div>
+                <span id="audio-reflex-text">TAP TO START</span>
+            </div>
+            <div class="stats">
+                <div>Best Time: <span class="big-number" id="best-audioreflex">--</span></div>
+                <div>Last Time: <span id="last-audioreflex">--</span></div>
+                <div>Attempts: <span id="attempts-audioreflex">0</span></div>
+            </div>
+            <div class="history-panel" id="audioreflex-history"></div>
+            <button class="reset-btn" onclick="resetAudioReflex()">RESET STATS</button>
+        </div>
+        
+        <!-- Shape Shifter Game -->
+        <div id="shapeshifter-game" class="game-container">
+            <div class="game-instructions">
+                Watch the pattern of shapes. Tap immediately when a different shape appears!
+            </div>
+            <div class="shape-shifter-screen" onclick="handleShapeShifter()" id="shape-shifter-screen">
+                <div class="shape-display" id="shape-display">●</div>
+            </div>
+            <div id="shape-shifter-text" style="text-align: center; margin: 10px 0; color: #00ff41; font-weight: 600;">TAP TO START</div>
+            <div class="stats">
+                <div>Best Time: <span class="big-number" id="best-shapeshifter">--</span></div>
+                <div>Last Time: <span id="last-shapeshifter">--</span></div>
+                <div>Attempts: <span id="attempts-shapeshifter">0</span></div>
+            </div>
+            <div class="history-panel" id="shapeshifter-history"></div>
+            <button class="reset-btn" onclick="resetShapeShifter()">RESET STATS</button>
         </div>
     </div>
 
@@ -879,6 +1096,31 @@
                 best: null,
                 attempts: 0,
                 history: []
+            },
+            colorFlash: {
+                state: 'waiting',
+                currentColor: null,
+                targetColor: 'red',
+                flashTime: null,
+                best: null,
+                attempts: 0,
+                history: []
+            },
+            audioReflex: {
+                state: 'waiting',
+                audioTime: null,
+                best: null,
+                attempts: 0,
+                history: []
+            },
+            shapeShifter: {
+                state: 'waiting',
+                currentShape: 'circle',
+                patternCount: 0,
+                changeTime: null,
+                best: null,
+                attempts: 0,
+                history: []
             }
         };
 
@@ -896,6 +1138,15 @@
                 gameState.placement.best = data.placement?.best || null;
                 gameState.placement.attempts = data.placement?.attempts || 0;
                 gameState.placement.history = data.placement?.history || [];
+                gameState.colorFlash.best = data.colorFlash?.best || null;
+                gameState.colorFlash.attempts = data.colorFlash?.attempts || 0;
+                gameState.colorFlash.history = data.colorFlash?.history || [];
+                gameState.audioReflex.best = data.audioReflex?.best || null;
+                gameState.audioReflex.attempts = data.audioReflex?.attempts || 0;
+                gameState.audioReflex.history = data.audioReflex?.history || [];
+                gameState.shapeShifter.best = data.shapeShifter?.best || null;
+                gameState.shapeShifter.attempts = data.shapeShifter?.attempts || 0;
+                gameState.shapeShifter.history = data.shapeShifter?.history || [];
             }
             updateAllDisplays();
         }
@@ -916,6 +1167,21 @@
                     best: gameState.placement.best,
                     attempts: gameState.placement.attempts,
                     history: gameState.placement.history.slice(-10)
+                },
+                colorFlash: {
+                    best: gameState.colorFlash.best,
+                    attempts: gameState.colorFlash.attempts,
+                    history: gameState.colorFlash.history.slice(-10)
+                },
+                audioReflex: {
+                    best: gameState.audioReflex.best,
+                    attempts: gameState.audioReflex.attempts,
+                    history: gameState.audioReflex.history.slice(-10)
+                },
+                shapeShifter: {
+                    best: gameState.shapeShifter.best,
+                    attempts: gameState.shapeShifter.attempts,
+                    history: gameState.shapeShifter.history.slice(-10)
                 }
             };
             localStorage.setItem('clickSpeedGames', JSON.stringify(dataToSave));
@@ -946,6 +1212,27 @@
             document.getElementById('best-placement').textContent = gameState.placement.best ? formatTime(gameState.placement.best) : '--';
             document.getElementById('attempts-placement').textContent = gameState.placement.attempts;
             updateHistory('placement', gameState.placement.history);
+
+            // Update color flash
+            if (document.getElementById('best-colorflash')) {
+                document.getElementById('best-colorflash').textContent = gameState.colorFlash.best ? formatTime(gameState.colorFlash.best) : '--';
+                document.getElementById('attempts-colorflash').textContent = gameState.colorFlash.attempts;
+                updateHistory('colorflash', gameState.colorFlash.history);
+            }
+
+            // Update audio reflex
+            if (document.getElementById('best-audioreflex')) {
+                document.getElementById('best-audioreflex').textContent = gameState.audioReflex.best ? formatTime(gameState.audioReflex.best) : '--';
+                document.getElementById('attempts-audioreflex').textContent = gameState.audioReflex.attempts;
+                updateHistory('audioreflex', gameState.audioReflex.history);
+            }
+
+            // Update shape shifter
+            if (document.getElementById('best-shapeshifter')) {
+                document.getElementById('best-shapeshifter').textContent = gameState.shapeShifter.best ? formatTime(gameState.shapeShifter.best) : '--';
+                document.getElementById('attempts-shapeshifter').textContent = gameState.shapeShifter.attempts;
+                updateHistory('shapeshifter', gameState.shapeShifter.history);
+            }
         }
 
         function updateHistory(gameType, history) {
@@ -1267,18 +1554,367 @@
             saveGameData();
         }
 
+        // Color Flash Game
+        function handleColorFlash() {
+            const now = performance.now();
+            const screen = document.getElementById('color-flash-screen');
+            const text = document.getElementById('color-flash-text');
+            const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+            const colorMap = {
+                red: '#ff4444', blue: '#4444ff', green: '#44ff44',
+                yellow: '#ffff44', purple: '#ff44ff', orange: '#ff8844'
+            };
+            
+            if (gameState.colorFlash.state === 'waiting') {
+                gameState.colorFlash.state = 'active';
+                gameState.colorFlash.targetColor = colors[Math.floor(Math.random() * colors.length)];
+                document.getElementById('color-target').textContent = `TARGET: ${gameState.colorFlash.targetColor.toUpperCase()}`;
+                text.textContent = 'WATCH FOR THE COLOR...';
+                screen.style.background = '#1a1a1a';
+                
+                const startDelay = Math.random() * 5000 + 1000;
+                setTimeout(() => {
+                    if (gameState.colorFlash.state === 'active') {
+                        const flashColor = Math.random() < 0.3 ? gameState.colorFlash.targetColor : colors[Math.floor(Math.random() * colors.length)];
+                        gameState.colorFlash.currentColor = flashColor;
+                        screen.style.background = colorMap[flashColor];
+                        text.textContent = flashColor === gameState.colorFlash.targetColor ? 'TAP NOW!' : 'WRONG COLOR';
+                        
+                        if (flashColor === gameState.colorFlash.targetColor) {
+                            gameState.colorFlash.flashTime = performance.now();
+                        }
+                        
+                        setTimeout(() => {
+                            if (gameState.colorFlash.state === 'active') {
+                                finishColorFlash(false);
+                            }
+                        }, 800);
+                    }
+                }, startDelay);
+                
+            } else if (gameState.colorFlash.state === 'active') {
+                if (gameState.colorFlash.currentColor === gameState.colorFlash.targetColor && gameState.colorFlash.flashTime) {
+                    const reactionTime = now - gameState.colorFlash.flashTime;
+                    finishColorFlash(true, reactionTime);
+                } else {
+                    finishColorFlash(false);
+                }
+            }
+        }
+
+        function finishColorFlash(success, reactionTime = null) {
+            gameState.colorFlash.attempts++;
+            const screen = document.getElementById('color-flash-screen');
+            const text = document.getElementById('color-flash-text');
+            
+            if (success && reactionTime) {
+                const isNewRecord = gameState.colorFlash.best === null || reactionTime < gameState.colorFlash.best;
+                
+                if (isNewRecord) {
+                    gameState.colorFlash.best = reactionTime;
+                    showNotification('🎨 NEW COLOR FLASH RECORD! ' + formatTime(reactionTime));
+                }
+                
+                gameState.colorFlash.history.push({
+                    time: reactionTime,
+                    timestamp: Date.now()
+                });
+                
+                document.getElementById('best-colorflash').textContent = formatTime(gameState.colorFlash.best);
+                document.getElementById('last-colorflash').textContent = formatTime(reactionTime);
+            } else {
+                document.getElementById('last-colorflash').textContent = 'MISS';
+            }
+            
+            document.getElementById('attempts-colorflash').textContent = gameState.colorFlash.attempts;
+            updateHistory('colorflash', gameState.colorFlash.history);
+            saveGameData();
+            
+            gameState.colorFlash.state = 'waiting';
+            gameState.colorFlash.currentColor = null;
+            gameState.colorFlash.flashTime = null;
+            screen.style.background = '#1a1a1a';
+            text.textContent = 'TAP TO START AGAIN';
+        }
+
+        function resetColorFlash() {
+            gameState.colorFlash = {
+                state: 'waiting',
+                currentColor: null,
+                targetColor: 'red',
+                flashTime: null,
+                best: null,
+                attempts: 0,
+                history: []
+            };
+            document.getElementById('best-colorflash').textContent = '--';
+            document.getElementById('last-colorflash').textContent = '--';
+            document.getElementById('attempts-colorflash').textContent = '0';
+            document.getElementById('color-flash-text').textContent = 'TAP TO START';
+            document.getElementById('color-flash-screen').style.background = '#1a1a1a';
+            updateHistory('colorflash', []);
+            saveGameData();
+        }
+
+        // Audio Reflex Game
+        function handleAudioReflex() {
+            const now = performance.now();
+            const screen = document.getElementById('audio-reflex-screen');
+            const text = document.getElementById('audio-reflex-text');
+            
+            if (gameState.audioReflex.state === 'waiting') {
+                gameState.audioReflex.state = 'listening';
+                text.textContent = 'LISTEN CAREFULLY...';
+                screen.style.background = '#1a1a1a';
+                
+                const audioDelay = Math.random() * 6000 + 2000;
+                setTimeout(() => {
+                    if (gameState.audioReflex.state === 'listening') {
+                        gameState.audioReflex.state = 'ready';
+                        gameState.audioReflex.audioTime = performance.now();
+                        text.textContent = 'TAP NOW!';
+                        screen.style.background = '#00ff41';
+                        screen.style.color = '#0a0a0a';
+                        
+                        // Create audio beep using Web Audio API
+                        try {
+                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            
+                            oscillator.frequency.value = 800;
+                            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                            
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.5);
+                        } catch (e) {
+                            console.log('Audio not supported');
+                        }
+                        
+                        setTimeout(() => {
+                            if (gameState.audioReflex.state === 'ready') {
+                                finishAudioReflex(false);
+                            }
+                        }, 2000);
+                    }
+                }, audioDelay);
+                
+            } else if (gameState.audioReflex.state === 'listening') {
+                // Too early
+                finishAudioReflex(false, 'TOO EARLY');
+            } else if (gameState.audioReflex.state === 'ready') {
+                const reactionTime = now - gameState.audioReflex.audioTime;
+                finishAudioReflex(true, reactionTime);
+            }
+        }
+
+        function finishAudioReflex(success, reactionTime = null) {
+            gameState.audioReflex.attempts++;
+            const screen = document.getElementById('audio-reflex-screen');
+            const text = document.getElementById('audio-reflex-text');
+            
+            if (success && typeof reactionTime === 'number') {
+                const isNewRecord = gameState.audioReflex.best === null || reactionTime < gameState.audioReflex.best;
+                
+                if (isNewRecord) {
+                    gameState.audioReflex.best = reactionTime;
+                    showNotification('🔊 NEW AUDIO REFLEX RECORD! ' + formatTime(reactionTime));
+                }
+                
+                gameState.audioReflex.history.push({
+                    time: reactionTime,
+                    timestamp: Date.now()
+                });
+                
+                document.getElementById('best-audioreflex').textContent = formatTime(gameState.audioReflex.best);
+                document.getElementById('last-audioreflex').textContent = formatTime(reactionTime);
+            } else {
+                document.getElementById('last-audioreflex').textContent = reactionTime === 'TOO EARLY' ? 'TOO EARLY' : 'MISS';
+            }
+            
+            document.getElementById('attempts-audioreflex').textContent = gameState.audioReflex.attempts;
+            updateHistory('audioreflex', gameState.audioReflex.history);
+            saveGameData();
+            
+            gameState.audioReflex.state = 'waiting';
+            gameState.audioReflex.audioTime = null;
+            screen.style.background = '#1a1a1a';
+            screen.style.color = '#00ff41';
+            text.textContent = 'TAP TO START AGAIN';
+        }
+
+        function resetAudioReflex() {
+            gameState.audioReflex = {
+                state: 'waiting',
+                audioTime: null,
+                best: null,
+                attempts: 0,
+                history: []
+            };
+            document.getElementById('best-audioreflex').textContent = '--';
+            document.getElementById('last-audioreflex').textContent = '--';
+            document.getElementById('attempts-audioreflex').textContent = '0';
+            document.getElementById('audio-reflex-text').textContent = 'TAP TO START';
+            document.getElementById('audio-reflex-screen').style.background = '#1a1a1a';
+            document.getElementById('audio-reflex-screen').style.color = '#00ff41';
+            updateHistory('audioreflex', []);
+            saveGameData();
+        }
+
+        // Shape Shifter Game
+        function handleShapeShifter() {
+            const now = performance.now();
+            const screen = document.getElementById('shape-shifter-screen');
+            const display = document.getElementById('shape-display');
+            const text = document.getElementById('shape-shifter-text');
+            const shapes = ['●', '■', '▲', '♦'];
+            const shapeNames = ['circle', 'square', 'triangle', 'diamond'];
+            const shapeClasses = ['shape-circle', 'shape-square', 'shape-triangle', 'shape-diamond'];
+            
+            if (gameState.shapeShifter.state === 'waiting') {
+                gameState.shapeShifter.state = 'pattern';
+                gameState.shapeShifter.currentShape = 'circle';
+                gameState.shapeShifter.patternCount = 0;
+                text.textContent = 'WATCH FOR THE DIFFERENT SHAPE...';
+                
+                function showPattern() {
+                    if (gameState.shapeShifter.state !== 'pattern') return;
+                    
+                    display.textContent = shapes[0]; // Always start with circle
+                    display.className = 'shape-display ' + shapeClasses[0];
+                    gameState.shapeShifter.patternCount++;
+                    
+                    if (gameState.shapeShifter.patternCount > 3 && Math.random() < 0.25) {
+                        // Show different shape
+                        const differentShape = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3 (not 0)
+                        setTimeout(() => {
+                            if (gameState.shapeShifter.state === 'pattern') {
+                                display.textContent = shapes[differentShape];
+                                display.className = 'shape-display ' + shapeClasses[differentShape];
+                                gameState.shapeShifter.changeTime = performance.now();
+                                gameState.shapeShifter.state = 'changed';
+                                
+                                setTimeout(() => {
+                                    if (gameState.shapeShifter.state === 'changed') {
+                                        finishShapeShifter(false);
+                                    }
+                                }, 1500);
+                            }
+                        }, 500);
+                    } else {
+                        setTimeout(() => {
+                            showPattern();
+                        }, Math.random() * 800 + 600);
+                    }
+                }
+                
+                showPattern();
+                
+            } else if (gameState.shapeShifter.state === 'changed') {
+                const reactionTime = now - gameState.shapeShifter.changeTime;
+                finishShapeShifter(true, reactionTime);
+            } else if (gameState.shapeShifter.state === 'pattern') {
+                finishShapeShifter(false, 'TOO EARLY');
+            }
+        }
+
+        function finishShapeShifter(success, reactionTime = null) {
+            gameState.shapeShifter.attempts++;
+            const screen = document.getElementById('shape-shifter-screen');
+            const display = document.getElementById('shape-display');
+            const text = document.getElementById('shape-shifter-text');
+            
+            if (success && typeof reactionTime === 'number') {
+                const isNewRecord = gameState.shapeShifter.best === null || reactionTime < gameState.shapeShifter.best;
+                
+                if (isNewRecord) {
+                    gameState.shapeShifter.best = reactionTime;
+                    showNotification('🔺 NEW SHAPE SHIFTER RECORD! ' + formatTime(reactionTime));
+                }
+                
+                gameState.shapeShifter.history.push({
+                    time: reactionTime,
+                    timestamp: Date.now()
+                });
+                
+                document.getElementById('best-shapeshifter').textContent = formatTime(gameState.shapeShifter.best);
+                document.getElementById('last-shapeshifter').textContent = formatTime(reactionTime);
+            } else {
+                document.getElementById('last-shapeshifter').textContent = reactionTime === 'TOO EARLY' ? 'TOO EARLY' : 'MISS';
+            }
+            
+            document.getElementById('attempts-shapeshifter').textContent = gameState.shapeShifter.attempts;
+            updateHistory('shapeshifter', gameState.shapeShifter.history);
+            saveGameData();
+            
+            gameState.shapeShifter.state = 'waiting';
+            gameState.shapeShifter.patternCount = 0;
+            gameState.shapeShifter.changeTime = null;
+            display.textContent = '●';
+            display.className = 'shape-display shape-circle';
+            text.textContent = 'TAP TO START AGAIN';
+        }
+
+        function resetShapeShifter() {
+            gameState.shapeShifter = {
+                state: 'waiting',
+                currentShape: 'circle',
+                patternCount: 0,
+                changeTime: null,
+                best: null,
+                attempts: 0,
+                history: []
+            };
+            document.getElementById('best-shapeshifter').textContent = '--';
+            document.getElementById('last-shapeshifter').textContent = '--';
+            document.getElementById('attempts-shapeshifter').textContent = '0';
+            document.getElementById('shape-shifter-text').textContent = 'TAP TO START';
+            document.getElementById('shape-display').textContent = '●';
+            document.getElementById('shape-display').className = 'shape-display shape-circle';
+            updateHistory('shapeshifter', []);
+            saveGameData();
+        }
+
         function resetAllProgress() {
             if (confirm('Are you sure you want to reset ALL game progress? This cannot be undone!')) {
                 localStorage.removeItem('clickSpeedGames');
                 gameState.doubleClick = { firstClick: null, best: null, attempts: 0, history: [] };
                 gameState.reaction = { state: 'waiting', startTime: null, readyTime: null, best: null, attempts: 0, history: [] };
                 gameState.placement = { gameActive: false, currentTarget: 0, gameStartTime: null, targetTimes: [], best: null, attempts: 0, history: [] };
+                gameState.colorFlash = { state: 'waiting', currentColor: null, targetColor: 'red', flashTime: null, best: null, attempts: 0, history: [] };
+                gameState.audioReflex = { state: 'waiting', audioTime: null, best: null, attempts: 0, history: [] };
+                gameState.shapeShifter = { state: 'waiting', currentShape: 'circle', patternCount: 0, changeTime: null, best: null, attempts: 0, history: [] };
                 
                 document.getElementById('click-text').textContent = 'CLICK 1/2';
                 document.getElementById('reaction-screen').className = 'reaction-screen waiting';
                 document.getElementById('reaction-text').textContent = 'CLICK TO START';
-                document.getElementById('targets-area').innerHTML = '';
+                document.getElementById('targets-area').innerHTML = `
+                    <div class="placement-overlay" id="placement-overlay">
+                        <button class="placement-start-btn" onclick="startPlacementGameWithCountdown()">START GAME</button>
+                    </div>
+                `;
                 document.getElementById('placement-results').style.display = 'none';
+                
+                if (document.getElementById('color-flash-text')) {
+                    document.getElementById('color-flash-text').textContent = 'TAP TO START';
+                    document.getElementById('color-flash-screen').style.background = '#1a1a1a';
+                }
+                
+                if (document.getElementById('audio-reflex-text')) {
+                    document.getElementById('audio-reflex-text').textContent = 'TAP TO START';
+                    document.getElementById('audio-reflex-screen').style.background = '#1a1a1a';
+                    document.getElementById('audio-reflex-screen').style.color = '#00ff41';
+                }
+                
+                if (document.getElementById('shape-shifter-text')) {
+                    document.getElementById('shape-shifter-text').textContent = 'TAP TO START';
+                    document.getElementById('shape-display').textContent = '●';
+                    document.getElementById('shape-display').className = 'shape-display shape-circle';
+                }
                 
                 updateAllDisplays();
                 showNotification('🔄 ALL PROGRESS RESET');
